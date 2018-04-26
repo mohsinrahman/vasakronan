@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Vasakronan</title>
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
+  <script src='script.js'></script>
+  <script src='vasakronan.js'></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id='mySidenav' class='sidebar sidenav'>
+    <div class='heading'>
+      <h1>Properties</h1>
+
+    </div>
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div id='listings' class='listings'></div>
+  </div>
+  <div id='map' class='map pad2'>
+    <nav id='filter-group' class='filter-group'>Filter</nav>
+    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
+    <div class="city-menu" id="cityMenu">
+      <div id="menuHeader">Menu</div>
+      <ul>
+        <li><button type="button" name="button" onclick=latlong(18.063240,59.334591)>Stockholm</button></li>
+        <li><button type="button" name="button" onclick=latlong(17.632252,59.858227)>Uppsala</button></li>
+        <li><button type="button" name="button" onclick=latlong(11.974560,57.708870)>Gotheburg</button></li>
+        <li><button type="button" name="button" onclick=latlong(13.0007300,55.6058700)>Malmo</button></li>
+        <li><button type="button" name="button" onclick=latlong(13.1932100,55.7058400)>Lund</button></li>
+      </ul>
+    </div>
+    <img src="images/logo-vasakronan.gif" alt="Vasakronan - fastighetsbolag med fokus på kontor och butiker">
+    <nav id="menu"></nav>
+  </div>
+
+  <script type="text/javascript">
+    var filterGroup = document.getElementById('filter-group');
+    var stores = 'https://api.mapbox.com/datasets/v1/vasakronan/cjftij1yy0bdr33t8nx1o0t2p/features?access_token=pk.eyJ1IjoidmFzYWtyb25hbiIsImEiOiJjamVxdXNycWQ1OXRjMndwZTN5cHU4czhiIn0.XaybFln18h0g8Q-1EAEPDA';
+    // axios.get(stores, {
+    //     headers: {
+    //       "Access-Control-Allow-Origin": '*'
+    //     }
+    //   })
+    //   .then(function(response) {
+    //     map.on('load', function(e) {
+    //       // console.log(response);
+    //       map.addSource("stores", {
+    //         "type": "geojson",
+    //         "data": response.data
+    //       });
+    //
+    //       buildLocationList(response.data);
+    //       buildLocationListSideBar(response.data);
+    //       detailsOnClick(response.data);
+    //     });
+    //   })
+    //   .catch(function(error) {
+    //     console.log(error);
+    //   });
+    $.get(stores, function(data, status) {
+      map.addSource("stores", {
+        "type": "geojson",
+        "data": data
+      });
+      buildLocationList(data);
+      buildLocationListSideBar(data);
+      detailsOnClick(data);
+    });
+
+
+    mapboxgl.accessToken =
+      "pk.eyJ1IjoidmFzYWtyb25hbiIsImEiOiJjamVxdXNycWQ1OXRjMndwZTN5cHU4czhiIn0.XaybFln18h0g8Q-1EAEPDA";
+    // This adds the map to your page
+    //https://api.mapbox.com/datasets/v1/vasakronan/cjftij1yy0bdr33t8nx1o0t2p?
+    //access_token=pk.eyJ1IjoidmFzYWtyb25hbiIsImEiOiJjamVxdXNycWQ1OXRjMndwZTN5cHU4czhiIn0.XaybFln18h0g8Q-1EAEPDA
+    var map = new mapboxgl.Map({
+      // container id specified in the HTML
+      container: "map",
+      // style URL
+      style: "mapbox://styles/vasakronan/cjgc5im7t01jo2qp8q8slz7qt",
+      // initial position in [lon, lat] format
+      center: [15.621373, 58.410807],
+      // initial zoom
+      zoom: 5
+    });
+
+
+
+
+    setTimeout(function() {
+      map.flyTo({
+        zoom: 11,
+        center: [18.063240, 59.334591]
+      })
+    }, 3000);
+
+    function latlong(long, lat) {
+      map.flyTo({
+        zoom: 13,
+        center: [long, lat]
+      })
+    }
+
+
+    function flyToStore(currentFeature) {
+      map.flyTo({
+        center: currentFeature.geometry.coordinates,
+        zoom: 15
+      });
+    }
+
+    function createPopUp(currentFeature) {
+      console.log(currentFeature);
+      var popUps = document.getElementsByClassName('mapboxgl-popup');
+      // Check if there is already a popup on the map and if so, remove it
+      if (popUps[0]) popUps[0].remove();
+
+      var popup = new mapboxgl.Popup({
+          closeOnClick: false
+        })
+        .setLngLat(currentFeature.geometry.coordinates)
+        .setHTML('<h3>' + currentFeature.properties.propertyname + '</h3>' +
+          '<h4>' + currentFeature.properties.streetadress + '</h4>' +
+          '<h4>' + currentFeature.properties.buildingRebuildingYear + '</h4>')
+        .addTo(map);
+    }
+
+    function buildLocationList(data) {
+      //console.log(data.features);
+      // Iterate through the list of stores
+      var hotell = [];
+      var hotellArr = [];
+      var resturant = [];
+      var resturantArr = [];
+      var office = [];
+      var officeArr = [];
+      var apartment = [];
+      var apartmentArr = [];
+      for (i = 0; i < data.features.length; i++) {
+        var currentFeature = data.features[i];
+
+        // Shorten data.feature.properties to just `prop` so we're not
+        // writing this long form over and over again.
+        var prop = currentFeature.properties;
+        //console.log(prop);
+        //var symbol = currentFeature.properties["icon"];
+        //console.log(symbol);
+        //console.log(currentFeature.properties['icon']);
+
+        //console.log(prop);
+        for (var propty in prop) {
+          //console.log(propty)
+          if (propty === "hotelSqm") {
+            if (prop.hotelSqm !== "0" && prop.hotelSqm !== null) {
+              hotell.push(prop.hotelSqm);
+              hotellArr.push(currentFeature);
+            }
+            //var symbol = currentFeature.properties[propty];
+          } else if (propty === "restaurantsSqm") {
+            if (prop.restaurantsSqm !== "0" && prop.restaurantsSqm !== null) {
+              resturant.push(prop.restaurantsSqm);
+              resturantArr.push(currentFeature);
+            }
+            //console.log(propty);
+          } else if (propty === "officesSqm") {
+            if (prop.officesSqm !== "0") {
+              office.push(prop.officesSqm);
+              officeArr.push(currentFeature);
+            }
+
+            //console.log(officeArr);
+          } else if (propty === "apartmentsSqm") {
+            if (prop.apartmentsSqm !== "0") {
+              apartment.push(prop.apartmentsSqm);
+              apartmentArr.push(currentFeature);
+            }
+
+            //console.log(officeArr);
+          }
+        }
+      }
+      //console.log(hotell);
+      // console.log(resturant);
+      // console.log(hotellArr);
+      // console.log(resturantArr);
+      var vasakronanProperties = [];
+      vasakronanProperties.push(hotellArr);
+      vasakronanProperties.push(resturantArr);
+      vasakronanProperties.push(officeArr);
+      vasakronanProperties.push(apartmentArr);
+      //console.log(vasakronanProperties);
+      var toggleableLayerIds = ['Hotell', 'Resturant', "Office", "Apartment"];
+      for (let i = 0; i < vasakronanProperties.length; i++) {
+        console.log(i);
+        map.addSource(toggleableLayerIds[i], {
+          type: 'geojson',
+          data: {
+            "features": vasakronanProperties[i],
+            "type": "FeatureCollection"
+          }
+        });
+      }
+      // Hotell Layer
+      map.addLayer({
+        'id': 'Hotell',
+        'type': 'circle',
+        'source': 'Hotell',
+        'layout': {
+          'visibility': 'visible'
+        },
+        'paint': {
+          'circle-radius': {
+            'base': 4,
+            'stops': [
+              [12, 22],
+              [22, 180]
+            ]
+          },
+          'circle-color': '#16a085',
+          "circle-opacity": 0.8
+        }
+      });
+      // Resturant Layer
+      map.addLayer({
+        'id': 'Resturant',
+        'type': 'circle',
+        'source': 'Resturant',
+        'layout': {
+          'visibility': 'visible'
+        },
+        'paint': {
+          'circle-radius': {
+            'base': 1,
+            'stops': [
+              [12, 23],
+              [23, 180]
+            ]
+          },
+          'circle-color': '#2980b9',
+          "circle-opacity": 0.7,
+          'circle-stroke-color': '#2980b9'
+          /*  'circle-stroke-width': 11,
+            'circle-stroke-color': '#2980b9',
+            "circle-opacity": 0*/
+        }
+      });
+
+      // Office Layer
+      map.addLayer({
+        'id': 'Office',
+        'type': 'circle',
+        'source': 'Office',
+        'layout': {
+          'visibility': 'visible'
+        },
+        'paint': {
+          'circle-radius': {
+            'base': 1,
+            'stops': [
+              [6, 40],
+              [40, 80]
+            ]
+          },
+          'circle-color': '#3498db',
+          "circle-opacity": 0.6,
+          'circle-stroke-color': '#3498db'
+          /*  'circle-stroke-width': 11,
+            'circle-stroke-color': '#2980b9',
+            "circle-opacity": 0*/
+        }
+      });
+
+      //  Appartment Layer
+      map.addLayer({
+        'id': 'Apartment',
+        'type': 'circle',
+        'source': 'Apartment',
+        'layout': {
+          'visibility': 'visible'
+        },
+        'paint': {
+          'circle-radius': {
+            'base': 1,
+            'stops': [
+              [3, 10],
+              [10, 40]
+            ]
+          },
+          'circle-color': '#34495e',
+          "circle-opacity": 0.5,
+          'circle-stroke-color': '#34495e'
+          /*  'circle-stroke-width': 11,
+            'circle-stroke-color': '#2980b9',
+            "circle-opacity": 0*/
+        }
+      });
+
+
+
+
+
+
+      for (var i = 0; i < toggleableLayerIds.length; i++) {
+        var id = toggleableLayerIds[i];
+        var div = document.createElement('div');
+        div.setAttribute("class", "outer-div");
+        var span = document.createElement('span');
+        span.setAttribute("id", id);
+        let link = document.createElement('a');
+        link.href = '#';
+        link.className = 'active';
+
+        link.textContent = id;
+
+        link.onclick = function(e) {
+
+          var clickedLayer = this.textContent;
+          console.log(clickedLayer);
+          e.preventDefault();
+          e.stopPropagation();
+
+          var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+          if (visibility === 'visible') {
+            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+            this.className = '';
+          } else {
+            this.className = 'active';
+            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+          }
+        };
+
+        var layers = document.getElementById('menu');
+        div.appendChild(span);
+        div.appendChild(link);
+        layers.appendChild(div);
+      }
+
+    } // End for Loop
+    function detailsOnClick(stores) {
+      // Add an event listener for when a user clicks on the map
+      map.on('click', function(e) {
+        // Query all the rendered points in the view
+        //console.log(e);
+        var features = map.queryRenderedFeatures(e.point);
+        console.log(features);
+        if (features.length) {
+          var clickedPoint = features[0];
+          // 1. Fly to the point
+          flyToStore(clickedPoint);
+          // 2. Close all other popups and display popup for clicked store
+          createPopUp(clickedPoint);
+          // 3. Highlight listing in sidebar (and remove highlight for all other listings)
+          var activeItem = document.getElementsByClassName('active');
+          if (activeItem[0]) {
+            activeItem[0].classList.remove('active');
+          }
+          // Find the index of the store.features that corresponds to the clickedPoint that fired the event listener
+          var selectedFeature = clickedPoint.properties.streetadress;
+          console.log(stores.features);
+          for (var i = 0; i < stores.features.length; i++) {
+            if (stores.features[i].properties.streetadress === selectedFeature) {
+              selectedFeatureIndex = i;
+            }
+          }
+          // Select the correct list item using the found index and add the active class
+          var listing = document.getElementById('listing-' + selectedFeatureIndex);
+          listing.classList.add('active');
+        }
+      });
+    }
+
+    function buildLocationListSideBar(data) {
+
+      for (i = 0; i < data.features.length; i++) {
+        var currentFeature = data.features[i];
+        //console.log(currentFeature)
+        var prop = currentFeature.properties;
+        //console.log(prop);
+        if ("propertyname" in prop) {
+          console.log(prop.length)
+          var listings = document.getElementById('listings');
+          var listing = listings.appendChild(document.createElement('div'));
+          listing.className = 'item';
+          listing.id = "listing-" + i;
+
+          var link = listing.appendChild(document.createElement('a'));
+          link.href = '#';
+          link.className = 'title';
+          link.dataPosition = i;
+          link.innerHTML = prop.propertyname;
+
+
+
+          var details = listing.appendChild(document.createElement('div'));
+          details.innerHTML = prop.streetadress;
+
+          // if (prop.phone) {
+          //   details.innerHTML += ' &middot; ' + prop.phoneFormatted;
+          // }
+          // Add an event listener for the links in the sidebar listing
+          link.addEventListener('click', function(e) {
+            //console.log(e);
+            // Update the currentFeature to the store associated with the clicked link
+            var clickedListing = data.features[this.dataPosition];
+            // 1. Fly to the point associated with the clicked link
+            flyToStore(clickedListing);
+            // 2. Close all other popups and display popup for clicked store
+            createPopUp(clickedListing);
+            // 3. Highlight listing in sidebar (and remove highlight for all other listings)
+            var activeItem = document.getElementsByClassName('active');
+            if (activeItem[0]) {
+              activeItem[0].classList.remove('active');
+            }
+            this.parentNode.classList.add('active');
+          });
+        }
+
+
+      }
+    }
+
+
+
+    dragElement(document.getElementById(("cityMenu")));
+
+    function dragElement(elmnt) {
+      var pos1 = 0,
+        pos2 = 0,
+        pos3 = 0,
+        pos4 = 0;
+      if (document.getElementById(elmnt.id + "header")) {
+        /* if present, the header is where you move the DIV from:*/
+        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+      } else {
+        /* otherwise, move the DIV from anywhere inside the DIV:*/
+        elmnt.onmousedown = dragMouseDown;
+      }
+
+      function dragMouseDown(e) {
+        e = e || window.event;
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+      }
+
+      function elementDrag(e) {
+        e = e || window.event;
+        // calculate the new cursor position:
+        console.log(e.clientX);
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+      }
+
+      function closeDragElement() {
+        /* stop moving when mouse button is released:*/
+        document.onmouseup = null;
+        document.onmousemove = null;
+      }
+    }
+
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+    }
+  </script>
+</body>
+
+</html>
