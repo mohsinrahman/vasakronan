@@ -31,11 +31,11 @@
     <div class="city-menu" id="cityMenu">
       <div id="menuHeader">Menu</div>
       <ul>
-        <li><button type="button" name="button" onclick=latlong(18.063240,59.334591)>Stockholm</button></li>
-        <li><button type="button" name="button" onclick=latlong(17.632252,59.858227)>Uppsala</button></li>
-        <li><button type="button" name="button" onclick=latlong(11.974560,57.708870)>Gotheburg</button></li>
-        <li><button type="button" name="button" onclick=latlong(13.0007300,55.6058700)>Malmo</button></li>
-        <li><button type="button" name="button" onclick=latlong(13.1932100,55.7058400)>Lund</button></li>
+        <li><button type="button" name="button" onclick=latlong(18.063240,59.334591,11)>Stockholm</button></li>
+        <li><button type="button" name="button" onclick=latlong(17.632252,59.858227,15)>Uppsala</button></li>
+        <li><button type="button" name="button" onclick=latlong(11.974560,57.708870,11)>Gotheburg</button></li>
+        <li><button type="button" name="button" onclick=latlong(13.0007300,55.6058700,11)>Malmo</button></li>
+        <li><button type="button" name="button" onclick=latlong(13.1932100,55.7058400,11)>Lund</button></li>
       </ul>
     </div>
     <img src="images/logo-vasakronan.gif" alt="Vasakronan - fastighetsbolag med fokus på kontor och butiker">
@@ -103,9 +103,9 @@
       })
     }, 3000);
 
-    function latlong(long, lat) {
+    function latlong(long, lat, zoom) {
       map.flyTo({
-        zoom: 13,
+        zoom: zoom,
         center: [long, lat]
       })
     }
@@ -135,7 +135,7 @@
     }
 
     function buildLocationList(data) {
-      //console.log(data.features);
+      console.log(data);
       // Iterate through the list of stores
       var hotell = [];
       var hotellArr = [];
@@ -155,8 +155,6 @@
         //var symbol = currentFeature.properties["icon"];
         //console.log(symbol);
         //console.log(currentFeature.properties['icon']);
-
-        //console.log(prop);
         for (var propty in prop) {
           //console.log(propty)
           if (propty === "hotelSqm") {
