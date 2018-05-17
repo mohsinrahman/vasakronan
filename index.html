@@ -6,13 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Vasakronan</title>
+  <script src="build/main.bundle.js"></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
-  <script src='script.js'></script>
-  <script src='vasakronan.js'></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/Turf.js/5.1.5/turf.min.js'></script>
+
+  <!-- <script src='vasakronan.js'></script> -->
+  <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
   <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
 
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -29,15 +33,52 @@
     <nav id='filter-group' class='filter-group'>Filter</nav>
     <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
     <div class="city-menu" id="cityMenu">
-      <div id="menuHeader">Menu</div>
+      <div id="menuHeader">City</div>
       <ul>
-        <li><button type="button" name="button" onclick=latlong(18.063240,59.334591,11)>Stockholm</button></li>
-        <li><button type="button" name="button" onclick=latlong(17.632252,59.858227,15)>Uppsala</button></li>
-        <li><button type="button" name="button" onclick=latlong(11.974560,57.708870,11)>Gotheburg</button></li>
-        <li><button type="button" name="button" onclick=latlong(13.0007300,55.6058700,11)>Malmo</button></li>
-        <li><button type="button" name="button" onclick=latlong(13.1932100,55.7058400,11)>Lund</button></li>
+        <li><button class="stockholm">+</button><button type="button" name="button" onclick=latlong(17.51,58.78,18.37,59.52)>Stockholm</button>
+          <ul id="stockholm-area">
+            <li><button type="button" name="button" onclick=latlong(17.94479,59.40316,16)>Kista</button></li>
+            <li><button type="button" name="button" onclick=latlong(18.06999972,59.333332,15)>Norrmalm</button></li>
+          </ul>
+        </li>
+        <li><button class="uppsala">+</button><button type="button" name="button" onclick=latlong(17.47,59.71,17.72,59.99)>Uppsala</button>
+          <ul id="uppsala-area">
+            <li><button type="button" name="button" onclick=latlong(17.638344,59.860000,16)>Centrum</button></li>
+            <li><button type="button" name="button" onclick=latlong(17.650177,59.854268,16)>Universitiet</button></li>
+          </ul>
+        </li>
+        <li><button class="gotheburg">+</button><button type="button" name="button" onclick=latlong(11.91,57.70,12.01,57.72)>Gotheburg</button>
+          <ul id="gotheburg-area">
+            <li><button type="button" name="button" onclick=latlong(11.974560,57.708870,15)>North Town</button></li>
+            <li><button type="button" name="button" onclick=latlong(17.650177,59.854268,16)>Universitiet</button></li>
+          </ul>
+        </li>
+        <li><button class="malmo">+</button><button type="button" name="button" onclick=latlong(12.93,55.56,13.09,55.63)>Malmo</button>
+          <ul id="malmo-area">
+            <li><button type="button" name="button" onclick=latlong(17.638344,59.860000,16)>Centrum</button></li>
+            <li><button type="button" name="button" onclick=latlong(17.650177,59.854268,16)>Universitiet</button></li>
+          </ul>
+        </li>
+        <li><button class="lund">+</button><button type="button" name="button" onclick=latlong(13.16,55.68,13.23,55.73)>Lund</button>
+          <ul id="lund-area">
+            <li><button type="button" name="button" onclick=latlong(17.638344,59.860000,16)>Centrum</button></li>
+            <li><button type="button" name="button" onclick=latlong(17.650177,59.854268,16)>Universitiet</button></li>
+          </ul>
+        </li>
       </ul>
     </div>
+    <!-- <div class="inner-city-menu" id="inner-cityMenu">
+      <div id="inner-city-menuHeader">Area</div>
+      <ul>
+        <li><button type="button" name="button" onclick=latlong(18.063240,59.334591,11)>Kista</button></li>
+    </div> -->
+    <!-- <div class="area-menu" id="areaMenu">
+      <div id="areamenuHeader">Area</div>
+      <ul>
+        <li><button type="button" name="button" onclick=latlong(18.063240,59.334591,11)>Stockholm</button></li>
+    </div> -->
+
+
     <img src="images/logo-vasakronan.gif" alt="Vasakronan - fastighetsbolag med fokus på kontor och butiker">
     <nav id="menu"></nav>
   </div>
@@ -66,15 +107,24 @@
     //   .catch(function(error) {
     //     console.log(error);
     //   });
+    // https://stackoverflow.com/questions/35586360/mapbox-gl-js-getbounds-fitbounds?noredirect=1&lq=1
+
+
     $.get(stores, function(data, status) {
       map.addSource("stores", {
         "type": "geojson",
         "data": data
       });
+      console.log(data);
       buildLocationList(data);
       buildLocationListSideBar(data);
       detailsOnClick(data);
+
     });
+
+
+
+
 
 
     mapboxgl.accessToken =
@@ -90,31 +140,60 @@
       // initial position in [lon, lat] format
       center: [15.621373, 58.410807],
       // initial zoom
-      zoom: 5
+      zoom: 4,
+      sliderStyle: "large"
     });
+
+    //map.addControl(new mapboxgl.NavigationControl({position: 'bottom-left'}));
+    var nav = new mapboxgl.NavigationControl();
+map.addControl(nav, 'bottom-left');
 
 
 
 
     setTimeout(function() {
       map.flyTo({
-        zoom: 11,
-        center: [18.063240, 59.334591]
+        zoom: 5.5,
+        center: [15.621373, 58.410807]
       })
     }, 3000);
 
-    function latlong(long, lat, zoom) {
-      map.flyTo({
-        zoom: zoom,
-        center: [long, lat]
-      })
+    // function latlong(long, lat, zoom) {
+    //   map.flyTo({
+    //     zoom: zoom,
+    //     center: [long, lat]
+    //   })
+    //  18.063240,59.334591,12 }
+
+    function latlong(swlong, swlat, nelong,nelat) {
+      // let b = map.getBounds();
+      // var polygon = turf.polygon([[[125, -15], [113, -22], [154, -27], [144, -15], [125, -15]]]);
+      //  var area = turf.area(polygon);
+      //  var v1 = new mapboxgl.LngLat(polygon.geometry.coordinates);
+      //         console.log(v1);
+
+      map.fitBounds([[swlong, swlat],[nelong,nelat]]);
+
+  //       map.fitBounds([[
+  //     59.19431,
+  //     18.7936126
+  //
+  // ], [
+  //     59.5906771,
+  //     17.64618441
+  //
+  // ]]);
+  console.log(map.getBounds());
     }
+
+
+
 
 
     function flyToStore(currentFeature) {
       map.flyTo({
         center: currentFeature.geometry.coordinates,
-        zoom: 15
+        zoom: 18
       });
     }
 
@@ -135,7 +214,7 @@
     }
 
     function buildLocationList(data) {
-      console.log(data);
+      //console.log(data);
       // Iterate through the list of stores
       var hotell = [];
       var hotellArr = [];
@@ -198,7 +277,7 @@
       //console.log(vasakronanProperties);
       var toggleableLayerIds = ['Hotell', 'Resturant', "Office", "Apartment"];
       for (let i = 0; i < vasakronanProperties.length; i++) {
-        console.log(i);
+        //console.log(i);
         map.addSource(toggleableLayerIds[i], {
           type: 'geojson',
           data: {
@@ -385,7 +464,7 @@
         var prop = currentFeature.properties;
         //console.log(prop);
         if ("propertyname" in prop) {
-          console.log(prop.length)
+          //console.log(prop.length)
           var listings = document.getElementById('listings');
           var listing = listings.appendChild(document.createElement('div'));
           listing.className = 'item';
@@ -422,57 +501,9 @@
             this.parentNode.classList.add('active');
           });
         }
-
-
       }
     }
 
-
-
-    dragElement(document.getElementById(("cityMenu")));
-
-    function dragElement(elmnt) {
-      var pos1 = 0,
-        pos2 = 0,
-        pos3 = 0,
-        pos4 = 0;
-      if (document.getElementById(elmnt.id + "header")) {
-        /* if present, the header is where you move the DIV from:*/
-        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-      } else {
-        /* otherwise, move the DIV from anywhere inside the DIV:*/
-        elmnt.onmousedown = dragMouseDown;
-      }
-
-      function dragMouseDown(e) {
-        e = e || window.event;
-        // get the mouse cursor position at startup:
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        // call a function whenever the cursor moves:
-        document.onmousemove = elementDrag;
-      }
-
-      function elementDrag(e) {
-        e = e || window.event;
-        // calculate the new cursor position:
-        console.log(e.clientX);
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        // set the element's new position:
-        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-      }
-
-      function closeDragElement() {
-        /* stop moving when mouse button is released:*/
-        document.onmouseup = null;
-        document.onmousemove = null;
-      }
-    }
 
     function openNav() {
       document.getElementById("mySidenav").style.width = "250px";
@@ -481,7 +512,54 @@
     function closeNav() {
       document.getElementById("mySidenav").style.width = "0";
     }
+
+    // Toggle + and -
+    $(document).ready(function() {
+
+      $(".stockholm").click(function() {
+        var sign = $(this).html();
+        (sign === "+") ? $(this).html("-"): $(this).html("+");
+        $("#stockholm-area").animate({
+          height: "toggle",
+          opacity: "toggle"
+        }, "slow");
+        //slideToggle("slow").fadeOut();
+      });
+      $(".uppsala").click(function() {
+        var sign = $(this).html();
+        (sign === "+") ? $(this).html("-"): $(this).html("+");
+        $("#uppsala-area").animate({
+          height: "toggle",
+          opacity: "toggle"
+        }, "slow");
+      });
+      $(".lund").click(function() {
+        var sign = $(this).html();
+        (sign === "+") ? $(this).html("-"): $(this).html("+");
+        $("#lund-area").animate({
+          height: "toggle",
+          opacity: "toggle"
+        }, "slow");
+      });
+      $(".gotheburg").click(function() {
+        var sign = $(this).html();
+        (sign === "+") ? $(this).html("-"): $(this).html("+");
+        $("#gotheburg-area").animate({
+          height: "toggle",
+          opacity: "toggle"
+        }, "slow");
+      });
+      $(".malmo").click(function() {
+        var sign = $(this).html();
+        (sign === "+") ? $(this).html("-"): $(this).html("+");
+        $("#malmo-area").animate({
+          height: "toggle",
+          opacity: "toggle"
+        }, "slow");
+      });
+    })
   </script>
+  <script src='cityMenu.js'></script>
 </body>
 
 </html>

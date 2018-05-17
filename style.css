@@ -172,10 +172,13 @@ a:hover {
   left: 0;
   z-index: 1;
   background-color: transparent;
-  text-align: center;
   border: 1px solid #d3d3d3;
   cursor: move;
   border-radius: 2px;
+}
+
+#inner-cityMenu {
+  margin-left: 100px;
 }
 
 #menuHeader {
@@ -184,6 +187,8 @@ a:hover {
   z-index: 10;
   background-color: #00853e;
   color: #fff;
+  text-align: center;
+  font-size: 16px;
 }
 
 .city-menu {}
@@ -204,6 +209,15 @@ a:hover {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+#stockholm-area button, #uppsala-area button, #gotheburg-area button, #malmo-area button, #lund-area button {
+  background-color: #656464;
+  color: #ffffff;
+}
+
+#stockholm-area, #uppsala-area, #gotheburg-area, #malmo-area, #lund-area {
+  display: none;
 }
 
 .mapboxgl-popup-close-button {
@@ -314,7 +328,7 @@ a:hover {
 
 #menu a {
   font-size: 13px;
-  color: #0f0f0f;
+  color: #9e9b9b;
   display: block;
   margin: 0;
   padding: 0;
@@ -322,6 +336,10 @@ a:hover {
   text-decoration: none;
   text-align: center;
   display: inline-block;
+}
+
+#menu a.active {
+  color: #3887be;
 }
 
 .outer-div {
