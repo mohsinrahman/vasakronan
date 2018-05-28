@@ -7,24 +7,32 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Vasakronan</title>
   <script src="build/main.bundle.js"></script>
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/Turf.js/5.1.5/turf.min.js'></script>
-
   <!-- <script src='vasakronan.js'></script> -->
   <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
   <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
-
-
+  <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
+  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.2.0/mapbox-gl-geocoder.min.js'></script>
+  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.2.0/mapbox-gl-geocoder.css' type='text/css' />
   <link rel="stylesheet" href="style.css">
+  <style>
+    #mapx {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body>
   <div id='mySidenav' class='sidebar sidenav'>
     <div class='heading'>
       <h1>Properties</h1>
-
     </div>
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <div id='listings' class='listings'></div>
@@ -34,37 +42,49 @@
     <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
     <div class="city-menu" id="cityMenu">
       <div id="menuHeader">City</div>
-      <ul>
-        <li><button class="stockholm">+</button><button type="button" name="button" onclick=latlong(17.51,58.78,18.37,59.52)>Stockholm</button>
+      <ul id="list-cityMenu">Views
+        <button type="button" name="button" onclick=birdEye(0,0) style="margin:0.5em">
+          <i class="fas fa-eye" id="iconEye" style="color:#FFFFFF"></i>
+        </button>
+        <!-- <li><button class="stockholm">+</button><button type="button" name="button" onclick=latlong(17.51,58.78,18.37,59.52)>Stockholm</button>
           <ul id="stockholm-area">
-            <li><button type="button" name="button" onclick=latlong(17.94479,59.40316,16)>Kista</button></li>
-            <li><button type="button" name="button" onclick=latlong(18.06999972,59.333332,15)>Norrmalm</button></li>
+            <li><button type="button" name="button" onclick=latlongBlocklevel(17.951872,59.402879,15.00,45.00,-70.88)>Kista</button></li>
+            <li><button type="button" name="button" onclick=latlongBlocklevel(18.066942,59.333073,14.50,4.00,32)>Norrmalm</button>
+              <ul id="normalm-block">
+                <li><button type="button" name="button" onclick=latlongBlocklevel(18.072965,59.331491,15.66,1,-20)>kungsträdgården</button></li>
+              </ul>
+            </li>
+            <li><button type="button" name="button" onclick=latlongBlocklevel(18.090284,59.337183,14,30.00,-7.20)>Ostermalm</button>
+              <ul id="ostermalm-block">
+                <li><button type="button" name="button" onclick=latlongBlocklevel(18.072422,59.335808,16.00,-40,35)>Stureplan</button></li>
+              </ul>
+            </li>
           </ul>
         </li>
         <li><button class="uppsala">+</button><button type="button" name="button" onclick=latlong(17.47,59.71,17.72,59.99)>Uppsala</button>
           <ul id="uppsala-area">
-            <li><button type="button" name="button" onclick=latlong(17.638344,59.860000,16)>Centrum</button></li>
-            <li><button type="button" name="button" onclick=latlong(17.650177,59.854268,16)>Universitiet</button></li>
+            <li><button type="button" name="button" onclick=latlongBlocklevel(17.638344,59.860000,16)>Centrum</button></li>
+            <li><button type="button" name="button" onclick=latlongBlocklevel(17.650177,59.854268,16)>Universitiet</button></li>
           </ul>
         </li>
         <li><button class="gotheburg">+</button><button type="button" name="button" onclick=latlong(11.91,57.70,12.01,57.72)>Gotheburg</button>
           <ul id="gotheburg-area">
-            <li><button type="button" name="button" onclick=latlong(11.974560,57.708870,15)>North Town</button></li>
-            <li><button type="button" name="button" onclick=latlong(17.650177,59.854268,16)>Universitiet</button></li>
+            <li><button type="button" name="button" onclick=latlongBlocklevel(11.974560,57.708870,15)>North Town</button></li>
+            <li><button type="button" name="button" onclick=latlongBlocklevel(17.650177,59.854268,16)>Universitiet</button></li>
           </ul>
         </li>
         <li><button class="malmo">+</button><button type="button" name="button" onclick=latlong(12.93,55.56,13.09,55.63)>Malmo</button>
           <ul id="malmo-area">
-            <li><button type="button" name="button" onclick=latlong(17.638344,59.860000,16)>Centrum</button></li>
-            <li><button type="button" name="button" onclick=latlong(17.650177,59.854268,16)>Universitiet</button></li>
+            <li><button type="button" name="button" onclick=latlongBlocklevel(17.638344,59.860000,16)>Centrum</button></li>
+            <li><button type="button" name="button" onclick=latlongBlocklevel(17.650177,59.854268,16)>Universitiet</button></li>
           </ul>
         </li>
         <li><button class="lund">+</button><button type="button" name="button" onclick=latlong(13.16,55.68,13.23,55.73)>Lund</button>
           <ul id="lund-area">
-            <li><button type="button" name="button" onclick=latlong(17.638344,59.860000,16)>Centrum</button></li>
-            <li><button type="button" name="button" onclick=latlong(17.650177,59.854268,16)>Universitiet</button></li>
+            <li><button type="button" name="button" onclick=latlongBlocklevel(17.638344,59.860000,16)>Centrum</button></li>
+            <li><button type="button" name="button" onclick=latlongBlocklevel(17.650177,59.854268,16)>Universitiet</button></li>
           </ul>
-        </li>
+        </li> -->
       </ul>
     </div>
     <!-- <div class="inner-city-menu" id="inner-cityMenu">
@@ -77,12 +97,12 @@
       <ul>
         <li><button type="button" name="button" onclick=latlong(18.063240,59.334591,11)>Stockholm</button></li>
     </div> -->
-
-
     <img src="images/logo-vasakronan.gif" alt="Vasakronan - fastighetsbolag med fokus på kontor och butiker">
+    <div class="slidecontainer">
+      <input type="range" min="1" max="24" value="12" class="slider" id="myRange">
+    </div>
     <nav id="menu"></nav>
   </div>
-
   <script type="text/javascript">
     var filterGroup = document.getElementById('filter-group');
     var stores = 'https://api.mapbox.com/datasets/v1/vasakronan/cjftij1yy0bdr33t8nx1o0t2p/features?access_token=pk.eyJ1IjoidmFzYWtyb25hbiIsImEiOiJjamVxdXNycWQ1OXRjMndwZTN5cHU4czhiIn0.XaybFln18h0g8Q-1EAEPDA';
@@ -108,25 +128,16 @@
     //     console.log(error);
     //   });
     // https://stackoverflow.com/questions/35586360/mapbox-gl-js-getbounds-fitbounds?noredirect=1&lq=1
-
-
     $.get(stores, function(data, status) {
       map.addSource("stores", {
-        "type": "geojson",
-        "data": data
+        type: "geojson",
+        data: data
       });
-      console.log(data);
       buildLocationList(data);
       buildLocationListSideBar(data);
       detailsOnClick(data);
-
+      toFitBoundData(data);
     });
-
-
-
-
-
-
     mapboxgl.accessToken =
       "pk.eyJ1IjoidmFzYWtyb25hbiIsImEiOiJjamVxdXNycWQ1OXRjMndwZTN5cHU4czhiIn0.XaybFln18h0g8Q-1EAEPDA";
     // This adds the map to your page
@@ -143,14 +154,12 @@
       zoom: 4,
       sliderStyle: "large"
     });
-
     //map.addControl(new mapboxgl.NavigationControl({position: 'bottom-left'}));
     var nav = new mapboxgl.NavigationControl();
-map.addControl(nav, 'bottom-left');
-
-
-
-
+    map.addControl(nav, 'bottom-right');
+    map.addControl(new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken
+    }));
     setTimeout(function() {
       map.flyTo({
         zoom: 5.5,
@@ -165,30 +174,25 @@ map.addControl(nav, 'bottom-left');
     //   })
     //  18.063240,59.334591,12 }
 
-    function latlong(swlong, swlat, nelong,nelat) {
-      // let b = map.getBounds();
-      // var polygon = turf.polygon([[[125, -15], [113, -22], [154, -27], [144, -15], [125, -15]]]);
-      //  var area = turf.area(polygon);
-      //  var v1 = new mapboxgl.LngLat(polygon.geometry.coordinates);
-      //         console.log(v1);
+    // function latlong(x) {
+    //   console.log(x);
+    // }
 
-      map.fitBounds([[swlong, swlat],[nelong,nelat]]);
-
-  //       map.fitBounds([[
-  //     59.19431,
-  //     18.7936126
-  //
-  // ], [
-  //     59.5906771,
-  //     17.64618441
-  //
-  // ]]);
-  console.log(map.getBounds());
+    function latlongBlocklevel(long, lat, zoom, pitch, bearing) {
+      map.flyTo({
+        bearing: bearing,
+        pitch: pitch,
+        zoom: zoom,
+        center: [long, lat]
+      })
     }
 
-
-
-
+    function birdEye(pitch, bearing) {
+      map.flyTo({
+        bearing: bearing,
+        pitch: pitch
+      })
+    }
 
     function flyToStore(currentFeature) {
       map.flyTo({
@@ -224,9 +228,10 @@ map.addControl(nav, 'bottom-left');
       var officeArr = [];
       var apartment = [];
       var apartmentArr = [];
+      var cluster = [];
+      var clusterArr = [];
       for (i = 0; i < data.features.length; i++) {
         var currentFeature = data.features[i];
-
         // Shorten data.feature.properties to just `prop` so we're not
         // writing this long form over and over again.
         var prop = currentFeature.properties;
@@ -253,14 +258,12 @@ map.addControl(nav, 'bottom-left');
               office.push(prop.officesSqm);
               officeArr.push(currentFeature);
             }
-
             //console.log(officeArr);
           } else if (propty === "apartmentsSqm") {
             if (prop.apartmentsSqm !== "0") {
               apartment.push(prop.apartmentsSqm);
               apartmentArr.push(currentFeature);
             }
-
             //console.log(officeArr);
           }
         }
@@ -274,18 +277,59 @@ map.addControl(nav, 'bottom-left');
       vasakronanProperties.push(resturantArr);
       vasakronanProperties.push(officeArr);
       vasakronanProperties.push(apartmentArr);
+      vasakronanProperties.push(clusterArr);
+
       //console.log(vasakronanProperties);
-      var toggleableLayerIds = ['Hotell', 'Resturant', "Office", "Apartment"];
+      var toggleableLayerIds = ['Hotell', 'Resturant', 'Office', 'Apartment', 'clusters'];
       for (let i = 0; i < vasakronanProperties.length; i++) {
         //console.log(i);
+        var vasaData = {
+          "type": "FeatureCollection",
+          "features": vasakronanProperties[i]
+        }
+        // map.on('load', function() {
         map.addSource(toggleableLayerIds[i], {
-          type: 'geojson',
-          data: {
-            "features": vasakronanProperties[i],
-            "type": "FeatureCollection"
-          }
+          type: "geojson",
+          data: vasaData,
+          cluster: true,
+          clusterMaxZoom: 14, // Max zoom to cluster points on
+          clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
         });
       }
+      map.addLayer({
+        id: "clusters",
+        type: "circle",
+        source: "Office",
+        paint: {
+          'circle-radius': 20,
+          'circle-opacity': 0.7,
+          'circle-color': '#00a1d5'
+        }
+      });
+      map.addLayer({
+        id: "cluster-count",
+        type: "symbol",
+        source: "Office",
+        layout: {
+          'text-field': "{point_count}",
+          'visibility': "visible",
+        },
+        paint: {
+          "text-color": "#ffffff"
+        }
+      });
+      map.addLayer({
+        id: "unclustered-point",
+        type: "circle",
+        source: "Office",
+        filter: ["!has", "point_count"],
+        paint: {
+          "circle-color": "#00a1d5",
+          "circle-radius": 4,
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#fff"
+        }
+      });
       // Hotell Layer
       map.addLayer({
         'id': 'Hotell',
@@ -323,45 +367,38 @@ map.addControl(nav, 'bottom-left');
             ]
           },
           'circle-color': '#2980b9',
-          "circle-opacity": 0.7,
+          'circle-opacity': 0.7,
           'circle-stroke-color': '#2980b9'
-          /*  'circle-stroke-width': 11,
-            'circle-stroke-color': '#2980b9',
-            "circle-opacity": 0*/
         }
       });
 
       // Office Layer
       map.addLayer({
-        'id': 'Office',
-        'type': 'circle',
-        'source': 'Office',
-        'layout': {
+        id: 'Office',
+        type: 'circle',
+        source: 'Office',
+        layout: {
           'visibility': 'visible'
         },
         'paint': {
           'circle-radius': {
             'base': 1,
             'stops': [
-              [6, 40],
-              [40, 80]
+              [3, 10],
+              [10, 40]
             ]
           },
           'circle-color': '#3498db',
-          "circle-opacity": 0.6,
+          'circle-opacity': 0.6,
           'circle-stroke-color': '#3498db'
-          /*  'circle-stroke-width': 11,
-            'circle-stroke-color': '#2980b9',
-            "circle-opacity": 0*/
         }
       });
-
       //  Appartment Layer
       map.addLayer({
-        'id': 'Apartment',
-        'type': 'circle',
-        'source': 'Apartment',
-        'layout': {
+        id: 'Apartment',
+        type: 'circle',
+        source: 'Apartment',
+        layout: {
           'visibility': 'visible'
         },
         'paint': {
@@ -373,19 +410,10 @@ map.addControl(nav, 'bottom-left');
             ]
           },
           'circle-color': '#34495e',
-          "circle-opacity": 0.5,
+          'circle-opacity': 0.5,
           'circle-stroke-color': '#34495e'
-          /*  'circle-stroke-width': 11,
-            'circle-stroke-color': '#2980b9',
-            "circle-opacity": 0*/
         }
       });
-
-
-
-
-
-
       for (var i = 0; i < toggleableLayerIds.length; i++) {
         var id = toggleableLayerIds[i];
         var div = document.createElement('div');
@@ -395,18 +423,13 @@ map.addControl(nav, 'bottom-left');
         let link = document.createElement('a');
         link.href = '#';
         link.className = 'active';
-
         link.textContent = id;
-
         link.onclick = function(e) {
-
           var clickedLayer = this.textContent;
           console.log(clickedLayer);
           e.preventDefault();
           e.stopPropagation();
-
           var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-
           if (visibility === 'visible') {
             map.setLayoutProperty(clickedLayer, 'visibility', 'none');
             this.className = '';
@@ -415,13 +438,11 @@ map.addControl(nav, 'bottom-left');
             map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
           }
         };
-
         var layers = document.getElementById('menu');
         div.appendChild(span);
         div.appendChild(link);
         layers.appendChild(div);
       }
-
     } // End for Loop
     function detailsOnClick(stores) {
       // Add an event listener for when a user clicks on the map
@@ -457,7 +478,6 @@ map.addControl(nav, 'bottom-left');
     }
 
     function buildLocationListSideBar(data) {
-
       for (i = 0; i < data.features.length; i++) {
         var currentFeature = data.features[i];
         //console.log(currentFeature)
@@ -469,18 +489,13 @@ map.addControl(nav, 'bottom-left');
           var listing = listings.appendChild(document.createElement('div'));
           listing.className = 'item';
           listing.id = "listing-" + i;
-
           var link = listing.appendChild(document.createElement('a'));
           link.href = '#';
           link.className = 'title';
           link.dataPosition = i;
           link.innerHTML = prop.propertyname;
-
-
-
           var details = listing.appendChild(document.createElement('div'));
           details.innerHTML = prop.streetadress;
-
           // if (prop.phone) {
           //   details.innerHTML += ' &middot; ' + prop.phoneFormatted;
           // }
@@ -504,60 +519,189 @@ map.addControl(nav, 'bottom-left');
       }
     }
 
+    function toFitBoundData(data) {
+      //console.log(data);
+      let count = 0;
+      let points = [];
+      let cities = [];
+      let AllcArr = [];
+      for (let i = 0; i < data.features.length; i++) {
+        if (data.features[i].geometry.type === "Point") {
+          //points.push(data.features[i].geometry.coordinate)
+          cities.push(data.features[i].properties.city)
+          points.push(data.features[i])
+        }
+      } //End for loop
+      console.log(points);
+      var filteredCitiesArr = cities.filter(function(item, index) {
+        if (cities.indexOf(item) == index)
+          return item;
+      });
+      console.log(filteredCitiesArr);
+      for (let i = 0; i < filteredCitiesArr.length; i++) {
+        let cArr = [];
+        var filteredCities = filteredCitiesArr[i];
+        var city = {
+          cityName: filteredCitiesArr[i],
+          coordinate: cArr,
+          cityPart: [
 
-    function openNav() {
-      document.getElementById("mySidenav").style.width = "250px";
-    }
+            {
+              filteredCities: []
+            }
+          ]
+        };
+        for (let j = 0; j < points.length; j++) {
+          if (filteredCitiesArr[i] === points[j].properties.city) {
+            //filteredCitiesArr[i]+'City'.push(points[j].geometry.coordinates);
+            //console.log(points[j].geometry.coordinates);
+            cArr.push(points[j].geometry.coordinates)
+            var city = {
+              cityName: filteredCitiesArr[i],
+              coordinate: cArr,
+              cityPart: [
 
-    function closeNav() {
-      document.getElementById("mySidenav").style.width = "0";
-    }
+                {
+                  filteredCities: []
+                }
+              ]
+            };
+          }
+        }
+        AllcArr.push(city);
+      } //End for loop
+      //console.log(city);
+      console.log(AllcArr);
+      console.log(filteredCitiesArr.length);
+      for (let icity = 0; icity < filteredCitiesArr.length; icity++) {
+        //      console.log(filteredCitiesArr.length);
+        var li = document.createElement("li");
+        var cpUl = document.createElement("ul");
+        var cpLi = document.createElement("li");
+        var cpButton = document.createElement("button");
+        cpButton.innerHTML = "CP";
+        cpLi.appendChild(cpButton);
+        cpUl.appendChild(cpLi);
+        cpUl.setAttribute("id", filteredCitiesArr[icity]+"-area");
+        var button = document.createElement("button");
+        var toggeButton = document.createElement("button");
+        toggeButton.setAttribute("class", filteredCitiesArr[icity]);
+        li.appendChild(toggeButton);
+        toggeButton.innerHTML = "+";
+        button.innerHTML = AllcArr[icity].cityName;
+        li.appendChild(button);
+        li.appendChild(cpUl);
+        var ul = document.getElementById('list-cityMenu');
+        ul.appendChild(li);
 
-    // Toggle + and -
-    $(document).ready(function() {
+        button.onclick = (function() {
+          return function(event) {
+            event.preventDefault();
+            fitCallback(AllcArr[icity].coordinate, AllcArr[icity].cityName);
+          };
+        })();
 
-      $(".stockholm").click(function() {
-        var sign = $(this).html();
-        (sign === "+") ? $(this).html("-"): $(this).html("+");
-        $("#stockholm-area").animate({
-          height: "toggle",
-          opacity: "toggle"
-        }, "slow");
-        //slideToggle("slow").fadeOut();
-      });
-      $(".uppsala").click(function() {
-        var sign = $(this).html();
-        (sign === "+") ? $(this).html("-"): $(this).html("+");
-        $("#uppsala-area").animate({
-          height: "toggle",
-          opacity: "toggle"
-        }, "slow");
-      });
-      $(".lund").click(function() {
-        var sign = $(this).html();
-        (sign === "+") ? $(this).html("-"): $(this).html("+");
-        $("#lund-area").animate({
-          height: "toggle",
-          opacity: "toggle"
-        }, "slow");
-      });
-      $(".gotheburg").click(function() {
-        var sign = $(this).html();
-        (sign === "+") ? $(this).html("-"): $(this).html("+");
-        $("#gotheburg-area").animate({
-          height: "toggle",
-          opacity: "toggle"
-        }, "slow");
-      });
-      $(".malmo").click(function() {
-        var sign = $(this).html();
-        (sign === "+") ? $(this).html("-"): $(this).html("+");
-        $("#malmo-area").animate({
-          height: "toggle",
-          opacity: "toggle"
-        }, "slow");
-      });
-    })
+        $(document).ready(function() {
+            $("."+filteredCitiesArr[icity]).click(function() {
+              var sign = $(this).html();
+              (sign === "+") ? $(this).html("-"): $(this).html("+");
+              $("#"+filteredCitiesArr[icity]+"-area").animate({
+                height: "toggle",
+                opacity: "toggle"
+              }, "slow");
+              //slideToggle("slow").fadeOut();
+            });
+            })
+          } // End for loop
+          console.log(ul);
+
+
+        } // toFitBoundData Ends
+        function fitCallback(cty, ctyName) {
+          console.log(cty, ctyName);
+          var geojsonCity = {
+            "type": "FeatureCollection",
+            "features": [{
+              "type": "Feature",
+              "properties": {},
+              "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                  cty
+                ]
+              }
+            }]
+          };
+          var bbox = turf.extent(geojsonCity);
+          map.fitBounds(bbox, {
+            padding: 100
+          });
+          map.addSource("look" + ctyName, {
+            type: "geojson",
+            data: geojsonCity
+          });
+          map.addLayer({
+            id: "geojsonLayer",
+            type: "fill",
+            source: "look" + ctyName,
+            paint: {
+              "fill-color": "#bca9e1",
+              "fill-opacity": 0
+            }
+          });
+        }
+
+        function openNav() {
+          document.getElementById("mySidenav").style.width = "250px";
+        }
+
+        function closeNav() {
+          document.getElementById("mySidenav").style.width = "0";
+        }
+        // // Toggle + and -
+        // $(document).ready(function() {
+        //   $(".stockholm").click(function() {
+        //     var sign = $(this).html();
+        //     (sign === "+") ? $(this).html("-"): $(this).html("+");
+        //     $("#stockholm-area").animate({
+        //       height: "toggle",
+        //       opacity: "toggle"
+        //     }, "slow");
+        //     //slideToggle("slow").fadeOut();
+        //   });
+        //   $(".uppsala").click(function() {
+        //     var sign = $(this).html();
+        //     (sign === "+") ? $(this).html("-"): $(this).html("+");
+        //     $("#uppsala-area").animate({
+        //       height: "toggle",
+        //       opacity: "toggle"
+        //     }, "slow");
+        //   });
+        //   $(".lund").click(function() {
+        //     var sign = $(this).html();
+        //     (sign === "+") ? $(this).html("-"): $(this).html("+");
+        //     $("#lund-area").animate({
+        //       height: "toggle",
+        //       opacity: "toggle"
+        //     }, "slow");
+        //   });
+        //   $(".gotheburg").click(function() {
+        //     var sign = $(this).html();
+        //     (sign === "+") ? $(this).html("-"): $(this).html("+");
+        //     $("#gotheburg-area").animate({
+        //       height: "toggle",
+        //       opacity: "toggle"
+        //     }, "slow");
+        //   });
+        //   $(".malmo").click(function() {
+        //     var sign = $(this).html();
+        //     (sign === "+") ? $(this).html("-"): $(this).html("+");
+        //     $("#malmo-area").animate({
+        //       height: "toggle",
+        //       opacity: "toggle"
+        //     }, "slow");
+        //   });
+        // })
   </script>
   <script src='cityMenu.js'></script>
 </body>
