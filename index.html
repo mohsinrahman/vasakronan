@@ -46,57 +46,8 @@
         <button type="button" name="button" onclick=birdEye(0,0) style="margin:0.5em">
           <i class="fas fa-eye" id="iconEye" style="color:#FFFFFF"></i>
         </button>
-        <!-- <li><button class="stockholm">+</button><button type="button" name="button" onclick=latlong(17.51,58.78,18.37,59.52)>Stockholm</button>
-          <ul id="stockholm-area">
-            <li><button type="button" name="button" onclick=latlongBlocklevel(17.951872,59.402879,15.00,45.00,-70.88)>Kista</button></li>
-            <li><button type="button" name="button" onclick=latlongBlocklevel(18.066942,59.333073,14.50,4.00,32)>Norrmalm</button>
-              <ul id="normalm-block">
-                <li><button type="button" name="button" onclick=latlongBlocklevel(18.072965,59.331491,15.66,1,-20)>kungsträdgården</button></li>
-              </ul>
-            </li>
-            <li><button type="button" name="button" onclick=latlongBlocklevel(18.090284,59.337183,14,30.00,-7.20)>Ostermalm</button>
-              <ul id="ostermalm-block">
-                <li><button type="button" name="button" onclick=latlongBlocklevel(18.072422,59.335808,16.00,-40,35)>Stureplan</button></li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-        <li><button class="uppsala">+</button><button type="button" name="button" onclick=latlong(17.47,59.71,17.72,59.99)>Uppsala</button>
-          <ul id="uppsala-area">
-            <li><button type="button" name="button" onclick=latlongBlocklevel(17.638344,59.860000,16)>Centrum</button></li>
-            <li><button type="button" name="button" onclick=latlongBlocklevel(17.650177,59.854268,16)>Universitiet</button></li>
-          </ul>
-        </li>
-        <li><button class="gotheburg">+</button><button type="button" name="button" onclick=latlong(11.91,57.70,12.01,57.72)>Gotheburg</button>
-          <ul id="gotheburg-area">
-            <li><button type="button" name="button" onclick=latlongBlocklevel(11.974560,57.708870,15)>North Town</button></li>
-            <li><button type="button" name="button" onclick=latlongBlocklevel(17.650177,59.854268,16)>Universitiet</button></li>
-          </ul>
-        </li>
-        <li><button class="malmo">+</button><button type="button" name="button" onclick=latlong(12.93,55.56,13.09,55.63)>Malmo</button>
-          <ul id="malmo-area">
-            <li><button type="button" name="button" onclick=latlongBlocklevel(17.638344,59.860000,16)>Centrum</button></li>
-            <li><button type="button" name="button" onclick=latlongBlocklevel(17.650177,59.854268,16)>Universitiet</button></li>
-          </ul>
-        </li>
-        <li><button class="lund">+</button><button type="button" name="button" onclick=latlong(13.16,55.68,13.23,55.73)>Lund</button>
-          <ul id="lund-area">
-            <li><button type="button" name="button" onclick=latlongBlocklevel(17.638344,59.860000,16)>Centrum</button></li>
-            <li><button type="button" name="button" onclick=latlongBlocklevel(17.650177,59.854268,16)>Universitiet</button></li>
-          </ul>
-        </li> -->
       </ul>
     </div>
-    <!-- <div class="inner-city-menu" id="inner-cityMenu">
-      <div id="inner-city-menuHeader">Area</div>
-      <ul>
-        <li><button type="button" name="button" onclick=latlong(18.063240,59.334591,11)>Kista</button></li>
-    </div> -->
-    <!-- <div class="area-menu" id="areaMenu">
-      <div id="areamenuHeader">Area</div>
-      <ul>
-        <li><button type="button" name="button" onclick=latlong(18.063240,59.334591,11)>Stockholm</button></li>
-    </div> -->
     <img src="images/logo-vasakronan.gif" alt="Vasakronan - fastighetsbolag med fokus på kontor och butiker">
     <div class="slidecontainer">
       <input type="range" min="1" max="24" value="12" class="slider" id="myRange">
@@ -166,18 +117,6 @@
         center: [15.621373, 58.410807]
       })
     }, 3000);
-
-    // function latlong(long, lat, zoom) {
-    //   map.flyTo({
-    //     zoom: zoom,
-    //     center: [long, lat]
-    //   })
-    //  18.063240,59.334591,12 }
-
-    // function latlong(x) {
-    //   console.log(x);
-    // }
-
     function latlongBlocklevel(long, lat, zoom, pitch, bearing) {
       map.flyTo({
         bearing: bearing,
@@ -186,21 +125,18 @@
         center: [long, lat]
       })
     }
-
     function birdEye(pitch, bearing) {
       map.flyTo({
         bearing: bearing,
         pitch: pitch
       })
     }
-
     function flyToStore(currentFeature) {
       map.flyTo({
         center: currentFeature.geometry.coordinates,
         zoom: 18
       });
     }
-
     function createPopUp(currentFeature) {
       console.log(currentFeature);
       var popUps = document.getElementsByClassName('mapboxgl-popup');
@@ -216,7 +152,6 @@
           '<h4>' + currentFeature.properties.buildingRebuildingYear + '</h4>')
         .addTo(map);
     }
-
     function buildLocationList(data) {
       //console.log(data);
       // Iterate through the list of stores
@@ -278,7 +213,6 @@
       vasakronanProperties.push(officeArr);
       vasakronanProperties.push(apartmentArr);
       vasakronanProperties.push(clusterArr);
-
       //console.log(vasakronanProperties);
       var toggleableLayerIds = ['Hotell', 'Resturant', 'Office', 'Apartment', 'clusters'];
       for (let i = 0; i < vasakronanProperties.length; i++) {
@@ -371,7 +305,6 @@
           'circle-stroke-color': '#2980b9'
         }
       });
-
       // Office Layer
       map.addLayer({
         id: 'Office',
@@ -476,7 +409,6 @@
         }
       });
     }
-
     function buildLocationListSideBar(data) {
       for (i = 0; i < data.features.length; i++) {
         var currentFeature = data.features[i];
@@ -518,13 +450,17 @@
         }
       }
     }
-
     function toFitBoundData(data) {
       //console.log(data);
       let count = 0;
       let points = [];
       let cities = [];
       let AllcArr = [];
+      let AllcpArr = [];
+      let CityCoordinateArr= [];
+      let cPropsAllArr = [];
+      let ccArr=[];
+      var filteredCityPartsArr
       for (let i = 0; i < data.features.length; i++) {
         if (data.features[i].geometry.type === "Point") {
           //points.push(data.features[i].geometry.coordinate)
@@ -533,56 +469,121 @@
         }
       } //End for loop
       console.log(points);
+      //console.log(AllcpArr);
       var filteredCitiesArr = cities.filter(function(item, index) {
         if (cities.indexOf(item) == index)
           return item;
       });
-      console.log(filteredCitiesArr);
+      //console.log(filteredCitiesArr);
       for (let i = 0; i < filteredCitiesArr.length; i++) {
-        let cArr = [];
+        var cArr = [];
+        let cpArr = [];
+        let cPropsArr = [];
         var filteredCities = filteredCitiesArr[i];
         var city = {
           cityName: filteredCitiesArr[i],
-          coordinate: cArr,
-          cityPart: [
-
-            {
-              filteredCities: []
-            }
-          ]
+          coordinate: cArr
         };
         for (let j = 0; j < points.length; j++) {
           if (filteredCitiesArr[i] === points[j].properties.city) {
             //filteredCitiesArr[i]+'City'.push(points[j].geometry.coordinates);
             //console.log(points[j].geometry.coordinates);
+            //AllcpArr.push(points[j].properties)
+            //console.log(points[j].properties);
             cArr.push(points[j].geometry.coordinates)
-            var city = {
+            //ccArr.push(points[j].geometry.coordinates)
+            cPropsArr.push(points[j].properties)
+              // console.log(cArr);
+              // console.log(ccArr);
+             ccArr = cArr;
+            city = {
               cityName: filteredCitiesArr[i],
-              coordinate: cArr,
-              cityPart: [
-
-                {
-                  filteredCities: []
-                }
-              ]
+              coordinate: cArr
             };
           }
         }
         AllcArr.push(city);
+        //console.log(cPropsArr);
+        cPropsAllArr.push(cPropsArr);
+        //CityCoordinateArr.push(cArr);
       } //End for loop
-      //console.log(city);
       console.log(AllcArr);
+      //console.log(CityCoordinateArr);
+      for (let i = 0; i < cPropsAllArr.length; i++) {
+        //console.log(cPropsAllArr.length);
+           let cpArea= [];
+           let sameCpArea=[];
+           let cpCoordinatesArray=[];
+         for (let j = 0; j < cPropsAllArr[i].length; j++) {
+       //console.log(cPropsAllArr[i][j].city + " ---- " + cPropsAllArr[i][j].area + " ---- " + points[j].geometry.coordinates);
+        if(cPropsAllArr[i][j].city === filteredCitiesArr[i]){
+          //console.log(AllcArr[i].coordinate[j]);
+         //console.log(cPropsAllArr[i][j].city + " ---- " + filteredCitiesArr[i] + " ---- " + AllcArr);
+                 cpArea.push(cPropsAllArr[i][j].area);
+                sameCpArea.push(cPropsAllArr[i][j].area);
+                cpCoordinatesArray.push(AllcArr[i].coordinate[j]);
+}
+        }
+          //console.log(cpArea.length);
+         //console.log(sameCpArea.length);
+         filteredCityPartsArr =  cpArea.filter(function(item, index) {
+          if (cpArea.indexOf(item) == index)
+            return item;
+        });
+        //console.log(sameCpArea);
+       //console.log(filteredCityPartsArr);
+       //console.log(cpCoordinatesArray);
+       for (let x = 0; x < filteredCityPartsArr.length; x++) {
+          let filteredCitiesPartsCoordinates=[];
+         for (let z = 0; z < sameCpArea.length; z++) {
+
+               if (filteredCityPartsArr[x] === sameCpArea[z]) {
+                 //console.log(filteredCityPartsArr[x] + "---" + sameCpArea[z] + "---" + cpCoordinatesArray[z]);
+                 filteredCitiesPartsCoordinates.push(cpCoordinatesArray[z])
+               }
+         }
+                //console.log(filteredCityPartsArr[x]+ "---" +arr);
+                cityPartObj = {
+                  cityName: filteredCitiesArr[i],
+                  cityPart:
+                    {
+                      filteredCitiesParts: filteredCityPartsArr[x],
+                      filteredCitiesPartsCoordinates:filteredCitiesPartsCoordinates
+                    }
+                };
+                //console.log(cityPartObj);
+                AllcpArr.push(cityPartObj);
+       }
+      }
+
+ //console.log(AllcpArr);
+  //console.log(cpArray);
+      //console.log(filteredCitiesArr.length);
       console.log(filteredCitiesArr.length);
+      console.log(filteredCityPartsArr.length);
       for (let icity = 0; icity < filteredCitiesArr.length; icity++) {
-        //      console.log(filteredCitiesArr.length);
         var li = document.createElement("li");
-        var cpUl = document.createElement("ul");
-        var cpLi = document.createElement("li");
-        var cpButton = document.createElement("button");
-        cpButton.innerHTML = "CP";
-        cpLi.appendChild(cpButton);
-        cpUl.appendChild(cpLi);
-        cpUl.setAttribute("id", filteredCitiesArr[icity]+"-area");
+         var cpUl = document.createElement("ul");
+        for (let icityparts = 0; icityparts < AllcpArr.length; icityparts++) {
+          if(filteredCitiesArr[icity] === AllcpArr[icityparts].cityName){
+                 //console.log(filteredCitiesArr[icity] + " === " + AllcpArr[icityparts].cityName);
+                // console.log(AllcpArr[icityparts].cityPart.filteredCitiesParts);
+                 var cpLi = document.createElement("li");
+                 var cpButton = document.createElement("button");
+              cpButton.innerHTML = AllcpArr[icityparts].cityPart.filteredCitiesParts;
+              cpLi.appendChild(cpButton);
+              cpUl.appendChild(cpLi);
+              cpUl.setAttribute("id", filteredCitiesArr[icity]+"-area");
+              cpButton.onclick = (function() {
+                return function(event) {
+                  event.preventDefault();
+                 fitCallback(AllcpArr[icityparts].cityPart.filteredCitiesPartsCoordinates
+, AllcpArr[icityparts].cityPart.filteredCitiesParts);
+                  console.log(AllcpArr[icityparts].cityPart.filteredCitiesParts);
+                };
+              })();
+          }
+        }
         var button = document.createElement("button");
         var toggeButton = document.createElement("button");
         toggeButton.setAttribute("class", filteredCitiesArr[icity]);
@@ -593,14 +594,12 @@
         li.appendChild(cpUl);
         var ul = document.getElementById('list-cityMenu');
         ul.appendChild(li);
-
         button.onclick = (function() {
           return function(event) {
             event.preventDefault();
             fitCallback(AllcArr[icity].coordinate, AllcArr[icity].cityName);
           };
         })();
-
         $(document).ready(function() {
             $("."+filteredCitiesArr[icity]).click(function() {
               var sign = $(this).html();
@@ -614,11 +613,10 @@
             })
           } // End for loop
           console.log(ul);
-
-
         } // toFitBoundData Ends
         function fitCallback(cty, ctyName) {
-          console.log(cty, ctyName);
+        let SpaceFreeCtyName = ctyName.replace(/\s+/g, '');
+        console.log(cty, SpaceFreeCtyName);
           var geojsonCity = {
             "type": "FeatureCollection",
             "features": [{
@@ -636,72 +634,26 @@
           map.fitBounds(bbox, {
             padding: 100
           });
-          map.addSource("look" + ctyName, {
+          map.addSource("look" + SpaceFreeCtyName, {
             type: "geojson",
             data: geojsonCity
           });
           map.addLayer({
             id: "geojsonLayer",
             type: "fill",
-            source: "look" + ctyName,
+            source: "look" + SpaceFreeCtyName,
             paint: {
               "fill-color": "#bca9e1",
-              "fill-opacity": 0
+              "fill-opacity": 0.6
             }
           });
         }
-
         function openNav() {
           document.getElementById("mySidenav").style.width = "250px";
         }
-
         function closeNav() {
           document.getElementById("mySidenav").style.width = "0";
         }
-        // // Toggle + and -
-        // $(document).ready(function() {
-        //   $(".stockholm").click(function() {
-        //     var sign = $(this).html();
-        //     (sign === "+") ? $(this).html("-"): $(this).html("+");
-        //     $("#stockholm-area").animate({
-        //       height: "toggle",
-        //       opacity: "toggle"
-        //     }, "slow");
-        //     //slideToggle("slow").fadeOut();
-        //   });
-        //   $(".uppsala").click(function() {
-        //     var sign = $(this).html();
-        //     (sign === "+") ? $(this).html("-"): $(this).html("+");
-        //     $("#uppsala-area").animate({
-        //       height: "toggle",
-        //       opacity: "toggle"
-        //     }, "slow");
-        //   });
-        //   $(".lund").click(function() {
-        //     var sign = $(this).html();
-        //     (sign === "+") ? $(this).html("-"): $(this).html("+");
-        //     $("#lund-area").animate({
-        //       height: "toggle",
-        //       opacity: "toggle"
-        //     }, "slow");
-        //   });
-        //   $(".gotheburg").click(function() {
-        //     var sign = $(this).html();
-        //     (sign === "+") ? $(this).html("-"): $(this).html("+");
-        //     $("#gotheburg-area").animate({
-        //       height: "toggle",
-        //       opacity: "toggle"
-        //     }, "slow");
-        //   });
-        //   $(".malmo").click(function() {
-        //     var sign = $(this).html();
-        //     (sign === "+") ? $(this).html("-"): $(this).html("+");
-        //     $("#malmo-area").animate({
-        //       height: "toggle",
-        //       opacity: "toggle"
-        //     }, "slow");
-        //   });
-        // })
   </script>
   <script src='cityMenu.js'></script>
 </body>
