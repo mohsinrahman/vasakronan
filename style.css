@@ -205,7 +205,7 @@ a:hover {
   font-weight: bold;
 }
 
-.Stockholm, .Uppsala,
+/* .Stockholm, .Uppsala,
 .Malmo, .Goteborg,
 .Lund {
     display: inline;
@@ -217,12 +217,12 @@ a:hover {
     text-decoration: none;
     font-size: 20px;
     font-weight: bold;
-}
-.Stockholm:hover, .Uppsala:hover,
+} */
+/* .Stockholm:hover, .Uppsala:hover,
 .Malmo:hover, .Goteborg:hover,
 .Lund:hover {
     background: #262626;
-}
+} */
 
 .city-menu ul {
   list-style: none;
@@ -230,7 +230,7 @@ a:hover {
   padding: 0;
 }
 
-#Stockholm-area button, #Uppsala-area button, #Goteborg-area button, #Malmo-area button, #Lund-area button {
+/* #Stockholm-area button, #Uppsala-area button, #Goteborg-area button, #Malmo-area button, #Lund-area button {
   background-color: #00a1d5;
   color: #ffffff;
   font-weight: bold;
@@ -238,11 +238,7 @@ a:hover {
 
 #Stockholm-area, #Uppsala-area, #Goteborg-area, #Malmo-area, #Lund-area {
   display: none;
-}
-
-#ostermalm-block button, #normalm-block button{
-  background-color: #656490;
-}
+} */
 
 .mapboxgl-popup-close-button {
   display: block;
@@ -315,15 +311,17 @@ a:hover {
     appearance: none;
     width: 25px;
     height: 25px;
-    background: #4CAF50;
+    background: #00a1d5;
     cursor: pointer;
+    border-radius: 50%;
 }
 
 .slider::-moz-range-thumb {
     width: 25px;
     height: 25px;
-    background: #4CAF50;
+    background: #00a1d5;
     cursor: pointer;
+    border-radius: 50%;
 }
 
 /*    Filter  */
